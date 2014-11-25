@@ -1,0 +1,13 @@
+victuxbb\JsonPatch\Entity\Operation:
+    exclusion_policy: ALL    
+    properties: 
+      op:
+        type: string        
+        expose: true
+      path:
+        type: string 
+        expose: true
+      value:
+        type: string
+        expose: true
+

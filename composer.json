@@ -1,0 +1,28 @@
+{
+    "name": "victuxbb/jsonpatch",
+    "description": "Implementation of JSON Patch (http://tools.ietf.org/html/rfc6902)",
+	"keywords": ["json", "json pointer", "json operations","patch operations"],
+	"homepage": "https://github.com/victuxbb/jsonpatch",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Victor Caldentey",
+			"email": "victuxbb@gmail.com",
+			"homepage": "https://github.com/victuxbb"
+		}
+	],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/property-access": "~2.3",
+        "jms/serializer": "~0.11",
+        "doctrine/collections": "1.*",
+        "symfony/yaml": "~2.5"
+    },
+    "autoload": {
+        "psr-0": {
+            "victuxbb\\JsonPatch":  "src/"
+        }
+    }
+
+}

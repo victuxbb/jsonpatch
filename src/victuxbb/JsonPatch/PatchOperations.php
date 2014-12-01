@@ -2,18 +2,18 @@
 
 namespace victuxbb\JsonPatch;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use victuxbb\JsonPatch\JsonPointer;
 
 class PatchOperations implements PatchOperationsInterface {
 
 	
     private $object;
-    private $accessor;
+    private $jsonPointer;
 
     public function __construct($object)
     {
         $this->object = $object;        
-        $this->accessor = PropertyAccess::createPropertyAccessor();
+        $this->jsonPointer = new JsonPointer($targetObject);
     }
 
     /**
@@ -32,11 +32,10 @@ class PatchOperations implements PatchOperationsInterface {
     	
     }
 
-    public function replace($path,$value)
+    public function replace($operation)
     {        
-        $attribute = explode("/",$path);
-        $attribute = $attribute[1];        
-        $this->accessor->setValue($this->object,$attribute,$value);
+        $jp = $this->jsonPointer->setPointer($operation->path);
+        
     }
     /**
 	* TODO

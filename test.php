@@ -6,13 +6,17 @@ use victuxbb\JsonPatch\Patcher;
 
 $patcher = new Patcher();
 
-$targetJSON = '{"baz": "qux","foo": "bar"}';
+$targetJSON ='{"a":{"b":["c","d","e"]}}';
 
-$operations = '[
-     { "op": "replace", "path": "/baz", "value": "boo" },
-     { "op": "replace", "path": "/baz", "value": "caca" }
-   ]';
+$patchDocument = '[
+      {"op":"add", "path":"/a/d", "value":["a","b"]},       
+      {"op":"remove", "path":"/a/d/b"},      
+      {"op":"add", "path":"/a/d/-", "value":"b"},      
+      {"op":"move", "path":"/a/c", "from":"/a/d"},      
+      {"op":"copy", "path":"/a/e", "from":"/a/c"},      
+      {"op":"replace", "path":"/a/e", "value":["a"]}      
+    ]';
 
-$result = $patcher->patch($targetJSON,$operations);
+$result = $patcher->patch($targetJSON,$patchDocument);
 
 print_r($result);

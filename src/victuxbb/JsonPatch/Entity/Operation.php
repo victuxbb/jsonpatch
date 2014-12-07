@@ -13,6 +13,8 @@ class Operation{
 
     private $value;
 
+    private $from;
+
     public function _construct($op,$path,$value){
 
         $this->op = $op;
@@ -35,6 +37,12 @@ class Operation{
     {
         return $this->value;
     }   
+
+    public function getFrom()
+    {
+        return $this->from;
+    }
+    
 
 
 }

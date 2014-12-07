@@ -2,59 +2,57 @@
 
 namespace victuxbb\JsonPatch;
 
-use victuxbb\JsonPatch\JsonPointer;
+use Webnium\JsonPointer\ArrayAccessor;
+use Webnium\JsonPointer\Parser;
 
+/*
+** TODO Refactor DRY
+*/
 class PatchOperations implements PatchOperationsInterface {
 
 	
     private $object;
     private $jsonPointer;
 
-    public function __construct($object)
+    public function __construct(&$object)
     {
-        $this->object = $object;        
-        $this->jsonPointer = new JsonPointer($targetObject);
+        $this->object = &$object;        
+        $this->jsonPointer = new ArrayAccessor(new Parser);
     }
 
-    /**
-	* TODO
-    **/
-    public function add()
+    public function add($operation)
     {
-
+        $this->jsonPointer->set($operation->path,$this->object,$operation->value);
     }
-
-    /**
-	* TODO
-    **/
-    public function remove()
+   
+    public function remove($operation)
     {
-    	
+    	$this->jsonPointer->set($operation->path,$this->object,null);
     }
 
     public function replace($operation)
     {        
-        $jp = $this->jsonPointer->setPointer($operation->path);
-        
+        $this->jsonPointer->set($operation->path,$this->object,$operation->value);        
     }
-    /**
-	* TODO
-    **/
-    public function move()
+    
+    public function move($operation)
     {
+        $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
+        $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
 
+        $this->jsonPointer->set($operation->from,$this->object,null);
+    
     }
-    /**
-	* TODO
-    **/
-    public function copy()
+    
+    public function copy($operation)
     {
-
+        $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
+        $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
     }
     /**
-	* TODO
+	* TODO implement suggested errors in http://tools.ietf.org/html/rfc5789#section-2.2
     **/
-    public function test()
+    public function test($operation)
     {
         
     }

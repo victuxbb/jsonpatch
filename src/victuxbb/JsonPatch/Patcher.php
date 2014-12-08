@@ -21,7 +21,7 @@ class Patcher {
         foreach ($operations as $operation) {
             
             $method_call = $operation->op;   
-            $patchOperation = new PatchOperations($object);
+            $patchOperation = new PatchOperations($object,$operation);
             $reflectionMethod = new \ReflectionMethod('victuxbb\JsonPatch\PatchOperations',$method_call);
             $reflectionMethod->invoke($patchOperation,$operation);
             

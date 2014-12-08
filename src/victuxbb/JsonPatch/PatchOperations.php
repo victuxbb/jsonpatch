@@ -2,27 +2,31 @@
 
 namespace victuxbb\JsonPatch;
 
-use Webnium\JsonPointer\ArrayAccessor;
-use Webnium\JsonPointer\Parser;
+use victuxbb\JsonPatch\ArrayAccessor;
+use victuxbb\JsonPatch\Parser;
 
-/*
-** TODO Refactor DRY
-*/
+
 class PatchOperations implements PatchOperationsInterface {
 
 	
     private $object;
     private $jsonPointer;
+    private $parser;
 
-    public function __construct(&$object)
+    public function __construct(&$object,$operation)
     {
-        $this->object = &$object;        
-        $this->jsonPointer = new ArrayAccessor(new Parser);
+        $this->object = &$object;
+        $this->parser = new Parser($operation->path,$this->object);
+        $this->jsonPointer = new ArrayAccessor($this->parser);
     }
 
     public function add($operation)
     {
-        $this->jsonPointer->set($operation->path,$this->object,$operation->value);
+        if($this->parser->destinationIsLocationInArray($operation->path,$this->object)){
+            $this->jsonPointer->insert($operation->path,$this->object,$operation->value);
+        }else {
+            $this->jsonPointer->set($operation->path, $this->object, $operation->value);
+        }
     }
    
     public function remove($operation)

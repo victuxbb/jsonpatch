@@ -40,6 +40,23 @@ class PatcherTest extends TestCase
         $this->assertEquals($expected, $result);
 
 
+
+    }
+
+    public function testReplaceOperation()
+    {
+
+        $targetJSON ='{"baz": "qux","foo": "bar"}';
+        $patchOperations = '[
+             { "op": "replace", "path": "/baz", "value": "boo" }
+           ]';
+        $expected ='{"baz":"boo","foo":"bar"}';
+
+        $patcher = new Patcher();
+        $result = $patcher->patch($targetJSON,$patchOperations);
+        $this->assertEquals($expected, $result);
+
+
     }
 
 }

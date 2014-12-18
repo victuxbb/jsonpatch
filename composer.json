@@ -14,7 +14,7 @@
 	],
     "require": {
         "php": ">=5.3.3",
-        "webnium/json-pointer": "dev-master@dev"
+        "webnium/json-pointer": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "4.3.*"
@@ -22,11 +22,6 @@
     "autoload": {
         "psr-0": {
             "victuxbb\\JsonPatch":  "src/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
         }
     }
 

@@ -2,7 +2,7 @@
 
 namespace victuxbb\JsonPatch;
 
-use victuxbb\JsonPatch\ArrayAccessor;
+use victuxbb\JsonPatch\JsonAccessor;
 use victuxbb\JsonPatch\Parser;
 
 
@@ -16,35 +16,30 @@ class PatchOperations implements PatchOperationsInterface {
     public function __construct(&$object,$operation)
     {
         $this->object = &$object;
-        $this->parser = new Parser($operation->path,$this->object);
-        $this->jsonPointer = new ArrayAccessor($this->parser);
+        $this->parser = new JsonPointerParser($operation->path,$this->object);
+        $this->jsonPointer = new JsonAccessor($this->parser);
     }
 
     public function add($operation)
-    {
-        if($this->parser->destinationIsLocationInArray($operation->path,$this->object)){
-            $this->jsonPointer->insert($operation->path,$this->object,$operation->value);
-        }else {
-            $this->jsonPointer->set($operation->path, $this->object, $operation->value);
-        }
+    {           
+        $this->jsonPointer->insert($this->parser->getElements(),$this->object,$operation->value);        
     }
    
     public function remove($operation)
     {
-    	$this->jsonPointer->set($operation->path,$this->object,null);
+    	$this->jsonPointer->remove($this->parser->getElements(),$this->object);
     }
 
     public function replace($operation)
     {        
-        $this->jsonPointer->set($operation->path,$this->object,$operation->value);        
+        $this->jsonPointer->set($this->parser->getElements(),$this->object,$operation->value);        
     }
     
     public function move($operation)
     {
-        $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
-        $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
-
-        $this->jsonPointer->set($operation->from,$this->object,null);
+        $valueFrom = $this->jsonPointer->get($this->parser->getElements(),$this->object);  
+        $this->jsonPointer->insert($this->parser->getElements(),$this->object,$valueFrom);
+        $this->jsonPointer->remove($this->parser->getElements(),$this->object);
     
     }
     

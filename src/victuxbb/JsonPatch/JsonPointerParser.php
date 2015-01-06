@@ -8,11 +8,10 @@
 
 namespace victuxbb\JsonPatch;
 
-use Webnium\JsonPointer\Parser as WebniumParser;
-use Webnium\JsonPointer\Exception;
-use Webnium\JsonPointer\ParserInterface;
+use victuxbb\JsonPatch\Exception\SyntaxError;
 
-class Parser extends WebniumParser implements ParserInterface
+
+class JsonPointerParser implements JsonPointerParserInterface
 {
     /**
      * The elements of the JsonPointer
@@ -47,20 +46,66 @@ class Parser extends WebniumParser implements ParserInterface
             }
 
         }
-        $this->length = count($this->elements);
-        return $this->elements;
+        $this->length = count($this->elements);        
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function parse($pointer)
+    {
+        if ($pointer === '') {
+            return [];
+        }
+
+        if ($pointer[0] !== '/') {
+            throw new SyntaxError(sprintf('pointer start with "%s", "/" expected.', $pointer[0]));
+        }
+
+        $pointerArray = @array_map(function ($referenceToken) {
+            return preg_replace_callback('/~./', function ($matches) {
+                $escaped = $matches[0];
+
+                if ($escaped === '~0') {
+                    return '~';
+                }
+                if ($escaped === '~1') {
+                    return '/';
+                }
+
+                throw new SyntaxError(sprintf('unknown escape sequence "%s" detected.', $escaped));
+            }, $referenceToken);
+        }, explode('/', $pointer));
+
+        array_shift($pointerArray);
+
+        return $pointerArray;
+    }
+    
+    
     /*
      * An element to add to an existing array - whereupon the supplied
      * value is added to the array at the indicated location.
      */
     public function destinationIsLocationInArray()
-    {
+    {        
         if($this->length > 1){
             $lastElement = $this->elements[$this->length-1];
-            if(is_numeric($lastElement) && $this->isIndex[$this->length-2]) return true;
+            if(is_numeric($lastElement) && $this->isIndex[$this->length-2]){
+                return true;
+            }
         }
         return false;
+    }
+    
+    public function getElements()
+    {
+        return $this->elements;
+    }
+    
+    public function getLength()
+    {
+        return $this->length;
     }
 
 

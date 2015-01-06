@@ -1,13 +1,13 @@
 <?php
 
-namespace victuxbb\JsonPatch\Entity;
+namespace victuxbb\JsonPatch\Model;
 
 
 
 class Operation{
 
 
-	private $op;
+    private $op;
 
     private $path;
 

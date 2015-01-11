@@ -96,7 +96,7 @@ class PatcherTest extends TestCase
         $this->assertEquals($expected, $result);        
     }
     
-    /*public function testMoveOperation()
+    public function testMoveOperation()
     {
         $targetJSON ='{
             "foo": {
@@ -127,7 +127,7 @@ class PatcherTest extends TestCase
         $this->assertEquals($expected, $result);
         
         
-    }*/
+    }
        
 
 }

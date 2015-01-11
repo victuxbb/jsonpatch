@@ -36,9 +36,10 @@ class PatchOperations implements PatchOperationsInterface {
     
     public function move($operation)
     {
-        $valueFrom = $this->jsonPointer->get($this->parser->getElements(),$this->object);  
+        $elementsFrom = $this->parser->parse($operation->from);
+        $valueFrom = $this->jsonPointer->get($elementsFrom,$this->object);        
+        $this->jsonPointer->remove($elementsFrom,$this->object);
         $this->jsonPointer->insert($this->parser->getElements(),$this->object,$valueFrom);
-        $this->jsonPointer->remove($this->parser->getElements(),$this->object);
     
     }
     

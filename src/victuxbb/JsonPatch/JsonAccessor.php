@@ -53,9 +53,7 @@ class JsonAccessor
      * @param mixed  $value   value to set
      *
      * @throws Exception\SyntaxError
-     * @throws Exception\NoneExistentValue
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @SuppressWarnings(PHPMD.EvalExpression)     
+     * @throws Exception\NoneExistentValue     
      */
     
         
@@ -83,19 +81,17 @@ class JsonAccessor
      * @param mixed  $value   value to set
      *
      * @throws Exception\SyntaxError
-     * @throws Exception\NoneExistentValue
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @SuppressWarnings(PHPMD.EvalExpression)
+     * @throws Exception\NoneExistentValue     
      */
     public function insert($pointerArray, &$array, $value)
     {   
-        while (list($key, $val) = each($pointerArray)) {            
+        while (list(, $val) = each($pointerArray)) {            
             if(isset($array[$val]) && is_array($array[$val])){        
                 $nextArray = &$array[$val];        
                 $this->insert($pointerArray,$nextArray, $value);
                 break;
             }else{                
-                if($this->parser->destinationIsLocationInArray()){                                       
+                if($this->parser->destinationIsLocationInArray()){
                     array_splice($array,$val,0,$value);
                 }else{                    
                     $array[$val] = $value;                
@@ -109,7 +105,7 @@ class JsonAccessor
 
     public function remove($pointerArray, &$array)
     {
-        while (list($key, $val) = each($pointerArray)) {            
+        while (list(, $val) = each($pointerArray)) {            
             if(isset($array[$val]) && is_array($array[$val])){        
                 $nextArray = &$array[$val];        
                 $this->remove($pointerArray,$nextArray);

@@ -3,7 +3,6 @@
 namespace victuxbb\JsonPatch;
 
 
-use victuxbb\JsonPatch\Model\Operation;
 use victuxbb\JsonPatch\PatchOperations;
 
 class Patcher {

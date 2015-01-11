@@ -3,8 +3,7 @@
 namespace victuxbb\JsonPatch;
 
 use victuxbb\JsonPatch\JsonAccessor;
-use victuxbb\JsonPatch\Parser;
-
+use victuxbb\JsonPatch\Exception\NoneExistentValue;
 
 class PatchOperations implements PatchOperationsInterface {
 
@@ -48,12 +47,14 @@ class PatchOperations implements PatchOperationsInterface {
         $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
         $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
     }
-    /**
-	* TODO implement suggested errors in http://tools.ietf.org/html/rfc5789#section-2.2
-    **/
+    
     public function test($operation)
     {
+        $valueFrom = $this->jsonPointer->get($operation->path,$this->object);
+        $value = $operation->value;
         
+        if($valueFrom === $value) return true;
+        
+        throw new NoneExistentValue('references none existent value.');
     }
-
 }

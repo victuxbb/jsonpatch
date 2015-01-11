@@ -61,7 +61,7 @@ class JsonAccessor
         
     public function set($pointerArray, &$array, $value)
     {       
-        while (list($key, $val) = each($pointerArray)) {            
+        while (list(,$val) = each($pointerArray)) {            
             if(is_array($array[$val])){
                 $nextArray = &$array[$val];                                
                 $this->set($pointerArray,$nextArray, $value);
@@ -126,6 +126,4 @@ class JsonAccessor
         }
         
     }
-
-
 }

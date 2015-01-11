@@ -11,5 +11,4 @@ interface PatchOperationsInterface {
     public function move($operation);
     public function copy($operation);
     public function test($operation);
-
 }

@@ -62,18 +62,23 @@ class JsonPointerParser implements JsonPointerParserInterface
             throw new SyntaxError(sprintf('pointer start with "%s", "/" expected.', $pointer[0]));
         }
 
-        $pointerArray = @array_map(function ($referenceToken) {
+        $pointerArray = array_map(function ($referenceToken) {
             return preg_replace_callback('/~./', function ($matches) {
                 $escaped = $matches[0];
+                
+                switch ($escaped) {
+                    case '~0':
+                        return '~';
+                        break;
 
-                if ($escaped === '~0') {
-                    return '~';
+                    case '~1':
+                        return '/';
+                        break;
+                    default:
+                        throw new SyntaxError(sprintf('unknown escape sequence "%s" detected.', $escaped));
+                        break;
                 }
-                if ($escaped === '~1') {
-                    return '/';
-                }
-
-                throw new SyntaxError(sprintf('unknown escape sequence "%s" detected.', $escaped));
+                
             }, $referenceToken);
         }, explode('/', $pointer));
 
@@ -107,7 +112,4 @@ class JsonPointerParser implements JsonPointerParserInterface
     {
         return $this->length;
     }
-
-
-
 }

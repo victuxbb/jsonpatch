@@ -2,9 +2,8 @@
 
 namespace victuxbb\JsonPatch;
 
-use victuxbb\JsonPatch\ArrayAccessor;
-use victuxbb\JsonPatch\Parser;
-
+use victuxbb\JsonPatch\JsonAccessor;
+use victuxbb\JsonPatch\Exception\NoneExistentValue;
 
 class PatchOperations implements PatchOperationsInterface {
 
@@ -16,35 +15,31 @@ class PatchOperations implements PatchOperationsInterface {
     public function __construct(&$object,$operation)
     {
         $this->object = &$object;
-        $this->parser = new Parser($operation->path,$this->object);
-        $this->jsonPointer = new ArrayAccessor($this->parser);
+        $this->parser = new JsonPointerParser($operation->path,$this->object);
+        $this->jsonPointer = new JsonAccessor($this->parser);
     }
 
     public function add($operation)
-    {
-        if($this->parser->destinationIsLocationInArray($operation->path,$this->object)){
-            $this->jsonPointer->insert($operation->path,$this->object,$operation->value);
-        }else {
-            $this->jsonPointer->set($operation->path, $this->object, $operation->value);
-        }
+    {           
+        $this->jsonPointer->insert($this->parser->getElements(),$this->object,$operation->value);        
     }
    
     public function remove($operation)
     {
-    	$this->jsonPointer->set($operation->path,$this->object,null);
+    	$this->jsonPointer->remove($this->parser->getElements(),$this->object);
     }
 
     public function replace($operation)
     {        
-        $this->jsonPointer->set($operation->path,$this->object,$operation->value);        
+        $this->jsonPointer->set($this->parser->getElements(),$this->object,$operation->value);        
     }
     
     public function move($operation)
     {
-        $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
-        $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
-
-        $this->jsonPointer->set($operation->from,$this->object,null);
+        $elementsFrom = $this->parser->parse($operation->from);
+        $valueFrom = $this->jsonPointer->get($elementsFrom,$this->object);        
+        $this->jsonPointer->remove($elementsFrom,$this->object);
+        $this->jsonPointer->insert($this->parser->getElements(),$this->object,$valueFrom);
     
     }
     
@@ -53,12 +48,14 @@ class PatchOperations implements PatchOperationsInterface {
         $valueFrom = $this->jsonPointer->get($operation->from,$this->object);  
         $this->jsonPointer->set($operation->path,$this->object,$valueFrom);
     }
-    /**
-	* TODO implement suggested errors in http://tools.ietf.org/html/rfc5789#section-2.2
-    **/
+    
     public function test($operation)
     {
+        $valueFrom = $this->jsonPointer->get($operation->path,$this->object);
+        $value = $operation->value;
         
+        if($valueFrom === $value) return true;
+        
+        throw new NoneExistentValue('references none existent value.');
     }
-
 }

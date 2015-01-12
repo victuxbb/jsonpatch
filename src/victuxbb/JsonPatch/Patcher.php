@@ -3,7 +3,6 @@
 namespace victuxbb\JsonPatch;
 
 
-use victuxbb\JsonPatch\Entity\Operation;
 use victuxbb\JsonPatch\PatchOperations;
 
 class Patcher {
@@ -24,8 +23,8 @@ class Patcher {
             $patchOperation = new PatchOperations($object,$operation);
             $reflectionMethod = new \ReflectionMethod('victuxbb\JsonPatch\PatchOperations',$method_call);
             $reflectionMethod->invoke($patchOperation,$operation);
-            
         }           
+        
 
         return json_encode($object);
 

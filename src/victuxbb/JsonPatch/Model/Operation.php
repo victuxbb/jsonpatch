@@ -1,13 +1,13 @@
 <?php
 
-namespace victuxbb\JsonPatch\Entity;
+namespace victuxbb\JsonPatch\Model;
 
 
 
 class Operation{
 
 
-	private $op;
+    private $op;
 
     private $path;
 
@@ -15,7 +15,7 @@ class Operation{
 
     private $from;
 
-    public function _construct($op,$path,$value){
+    public function __construct($op,$path,$value){
 
         $this->op = $op;
         $this->path = $path;
@@ -42,7 +42,4 @@ class Operation{
     {
         return $this->from;
     }
-    
-
-
 }

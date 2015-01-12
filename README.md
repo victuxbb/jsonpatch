@@ -17,20 +17,35 @@ into your `composer.json` file:
     }
 }
 ```
+or inside your root project directory
+
+``` bash
+
+$ composer require victuxbb/jsonpatch @stable
+
+```
 
 Documentation
 -------------
+With a target JSON like this:
 ``` php
-
 $targetJSON ='{"baz": "qux","foo": "bar"}';
+```
+and a variable with a JSON string operations:
+``` php
 $patchOperations = '[
      { "op": "replace", "path": "/baz", "value": "boo" }
    ]';
-$expected ='{"baz":"boo","foo":"bar"}';
+```
+create a instance of Patcher and use the "patch" method to get the json result:
 
+``` php
 $patcher = new Patcher();
 $result = $patcher->patch($targetJSON,$patchOperations);
-
+```
+$result will contain:
+``` json
+{"baz":"boo","foo":"bar"}
 ```
 
 Thanks to

@@ -47,6 +47,39 @@ $result will contain:
 ``` json
 {"baz":"boo","foo":"bar"}
 ```
+A typical use case with FOSRestBundle and JMSSerializer:
+``` php
+public function patchUserAction(Request $request,User $user)
+    {            
+        $json = $request->getContent();
+        $jps = $this->get('json_patch_service'); //symfony service that loads Patcher.php
+        $serializer = $this->get("jms_serializer");
+
+        $serializerGroup = array('view');
+
+        $sc = SerializationContext::create();
+        $sc->setGroups($serializerGroup);
+
+        $jsonUser = $serializer->serialize($user,'json',$sc); //Generating the json target of object that we want to update
+        $jsonUser = $jps->patch($jsonUser,$json); //json result with the changes applied of the json operations
+
+        $dc = DeserializationContext::create();
+        $dc->setAttribute('target',$user);
+
+        //Restore the doctrine entity object with deserialization and targeting the object with DeserializationContext
+        $serializer->deserialize($jsonUser,'Groupalia\BizApiBundle\Entity\User','json',$dc);
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        $response = new Response();
+        $response->setStatusCode(200);
+        
+        return $response;
+
+    }
+```
 
 Thanks to
 ---------
